@@ -1,16 +1,16 @@
 """Complete working example for figure 1.
 
 Prerequisites:
-    Make sure the input files are available locally. The script will first look for an
-    INPUT_DIR environment variable before defaulting to `./input/` for the directory
-    `fs-peptide`
+    This script assumes it is running in a local copy of the
+    https://github.com/kassonlab/gmxapi-tutorials repository. It will look for input
+    files relative to the location of this file.
 
 After installing GROMACS and gmxapi, execute this script with a Python 3.7+ interpreter.
 
 For a trajectory ensemble, use `mpiexec` and `mpi4py`. For example, for an ensemble of
 size 50, activate your gmxapi Python virtual environment and run
 
-    mpiexec -n 50 `which python` -m mpi4py figure1.py
+    mpiexec -n 50 `which python` -m mpi4py fs-peptide.py
 
 """
 import logging
@@ -18,8 +18,11 @@ import os
 from pathlib import Path
 
 import gmxapi as gmx
+from gmxapi import logical_not
 
-print(f'gmxapi Python package version {gmx.__version__}')
+logging.basicConfig(level=logging.INFO)
+
+logging.info(f'gmxapi Python package version {gmx.__version__}')
 assert gmx.version.has_feature('mdrun_runtime_args')
 assert gmx.version.has_feature('container_futures')
 assert gmx.version.has_feature('mdrun_checkpoint_output')
@@ -34,13 +37,20 @@ except:
     ensemble_size = 1
 
 
+######################
 # Confirm inputs exist
-input_dir = os.getenv('INPUT_DIR', default=os.path.join('.', 'input'))
-input_dir = Path(input_dir) / 'fs-peptide'
+#
+
+_script_dir = Path(__file__)
+input_dir = _script_dir.parent.parent.resolve() / 'input' / 'fs-peptide'
 if not all(p.exists() for p in (input_dir, input_dir / 'start0.pdb', input_dir / 'ref.pdb')):
     raise RuntimeError('Missing input files.')
 reference_struct = input_dir / 'ref.pdb'
 
+
+######################
+# Complete code from figure 1
+#
 
 def figure1a():
     """Figure 1a: gmxapi command-line operation.
@@ -94,7 +104,7 @@ def figure1b(make_top):
 
     input_list = gmx.read_tpr(tpr_input)
 
-    md = gmx.mdrun(input_list)
+    md = gmx.mdrun(input_list, runtime_args={'-maxh': '2'})
     md.run()
 
     return {
@@ -106,19 +116,29 @@ def figure1c(input_list):
     """Figure 1c: looping and custom operations"""
     subgraph = gmx.subgraph(variables={'found_native': False, 'checkpoint': '', 'min_rms': 1e6})
     with subgraph:
-        md = gmx.mdrun(input_list, runtime_args={'-cpi': subgraph.checkpoint, '-maxh': 2})
+        md = gmx.mdrun(
+            input_list,
+            runtime_args={
+                '-cpi': subgraph.checkpoint,
+                '-maxh': '2'
+            })
         subgraph.checkpoint = md.output.checkpoint
         rmsd = gmx.commandline_operation(
             'gmx', ['rms'],
             input_files={
                 '-s': reference_struct,
                 '-f': md.output.trajectory},
-            output_files={'-o': 'rmsd.xvg'})
-        subgraph.min_rms = numpy_min(xvg_parse(rmsd.output.file['-o'], [], keycol=0).output.data).output.value
+            output_files={'-o': 'rmsd.xvg'},
+            stdin='Backbone Backbone\n'
+        )
+        subgraph.min_rms = numeric_min(
+            xvg_to_array(rmsd.output.file['-o']).output.data).output.data
         subgraph.found_native = less_than(lhs=subgraph.min_rms, rhs=0.3).output.data
 
-    folding_loop = gmx.while_loop(operation=subgraph, condition=subgraph.found_native)()
+    folding_loop = gmx.while_loop(operation=subgraph,
+                                  condition=logical_not(subgraph.found_native))()
     folding_loop.run()
+    return folding_loop
 
 
 if __name__ == '__main__':
@@ -134,4 +154,5 @@ if __name__ == '__main__':
     else:
         logging.info(f'Generated trajectory {trajectory}.')
 
-    figure1c(input_list)
+    folding_loop = figure1c(input_list)
+    logging.info(f'Folding loop result: {folding_loop}')
