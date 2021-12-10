@@ -18,26 +18,46 @@ import os
 import typing
 from pathlib import Path
 
+# Configure logging module before gmxapi.
+from gmxapi.utility import join_path
+
+logging.basicConfig(level=logging.DEBUG)
+
 import gmxapi as gmx
 import gmxapi.abc
 from gmxapi import function_wrapper
 from gmxapi.exceptions import UsageError
 
-logging.basicConfig(level=logging.INFO)
-
 logging.info(f'gmxapi Python package version {gmx.__version__}')
 assert gmx.version.has_feature('mdrun_runtime_args')
-assert gmx.version.has_feature('container_futures')
-assert gmx.version.has_feature('mdrun_checkpoint_output')
+# assert gmx.version.has_feature('container_futures')
+# assert gmx.version.has_feature('mdrun_checkpoint_output')
 
 
 try:
-    import mpi4py.MPI
-    ensemble_size = mpi4py.MPI.COMM_WORLD.Get_size()
-    if mpi4py.MPI.COMM_WORLD.Get_rank() == 0 and ensemble_size > 1:
-        logging.info(f'{ensemble_size} MPI ranks detected. Running ensemble.')
-except:
+    from mpi4py import MPI
+
+    rank_number = MPI.COMM_WORLD.Get_rank()
+    ensemble_size = MPI.COMM_WORLD.Get_size()
+except ImportError:
+    rank_number = 0
     ensemble_size = 1
+    rank_tag = ''
+    MPI = None
+else:
+    rank_tag = 'rank{}:'.format(rank_number)
+
+
+# Update the logging output.
+log_format = '%(levelname)s %(name)s:%(filename)s:%(lineno)s %(rank_tag)s%(message)s'
+for handler in logging.getLogger().handlers:
+    handler.setFormatter(logging.Formatter(log_format))
+
+# TODO: Absolutely don't forget to remove the following!
+# Debugging in PyCharm
+# if rank_number == 0:
+#     import pydevd_pycharm
+#     pydevd_pycharm.settrace('localhost', port=12345, stdoutToServer=True, stderrToServer=True)
 
 #
 # Define some helpers
@@ -172,18 +192,22 @@ def figure1b(make_top):
 
     input_list = gmx.read_tpr(tpr_input)
 
-    md = gmx.mdrun(input_list, runtime_args={'-maxh': '0.001'})
-    md.run()
+    # md = gmx.mdrun(input_list, runtime_args={'-maxh': '0.001'})
+    # md.run()
 
     return {
         'input_list': input_list,
-        'trajectory': md.output.trajectory.result()}
+        # 'trajectory': md.output.trajectory.result()
+    }
 
 
 def figure1c(input_list):
     """Figure 1c: looping and custom operations"""
-    subgraph = gmx.subgraph(variables={'found_native': False, 'checkpoint': '',
-                                       'min_rms': 1e6, 'incomplete': True})
+    subgraph = gmx.subgraph(
+        variables={
+            'found_native': False,
+            'checkpoint': '',
+            'min_rms': 1e6})
     with subgraph:
         md = gmx.mdrun(
             input_list,
@@ -192,9 +216,8 @@ def figure1c(input_list):
                 '-maxh': '.001',
                 '-noappend': None
             })
-        logging.info(f'Binding checkpoint {md.output.checkpoint}')
-        subgraph.checkpoint = md.output.checkpoint
-        # logging.info(f'Setting up rmsd calculation.')
+
+        subgraph.checkpoint = join_path(md.output._work_dir, 'state.cpt').output.data
         # rmsd = gmx.commandline_operation(
         #     'gmx', ['rms'],
         #     input_files={
@@ -203,16 +226,16 @@ def figure1c(input_list):
         #     output_files={'-o': 'rmsd.xvg'},
         #     stdin='Backbone Backbone\n'
         # )
-        # logging.info(f'Binding output {rmsd.output.file}')
         # subgraph.min_rms = numeric_min(
         #     xvg_to_array(rmsd.output.file['-o']).output.data).output.data
         subgraph.found_native = less_than(lhs=subgraph.min_rms, rhs=0.3).output.data
-        logging.info(f'Bound result {subgraph.found_native}')
-        subgraph.incomplete = gmx.logical_not(subgraph.found_native)
+        # Remove the following when rmsd is working.
+        subgraph.min_rms = 0.
 
-    folding_loop = gmx.while_loop(operation=subgraph,
-                                  condition=subgraph.incomplete)()
-    # condition = gmx.logical_not(subgraph.found_native))()
+    folding_loop = gmx.while_loop(
+        operation=subgraph,
+        # condition=subgraph.incomplete)()
+        condition=gmx.logical_not(subgraph.found_native))()
     logging.info('Beginning folding_loop.')
     folding_loop.run()
     logging.info(f'Finished folding_loop at iteration {subgraph.iteration}.')
@@ -223,14 +246,15 @@ if __name__ == '__main__':
     make_top = figure1a()
     logging.info('Created a handle to a commandline operation.')
 
-    input_list, trajectory = figure1b(make_top).values()
-    if isinstance(trajectory, list):
-        logging.info(
-            'Generated trajectories: '
-            ', '.join(filename for filename in trajectory)
-        )
-    else:
-        logging.info(f'Generated trajectory {trajectory}.')
+    # input_list, trajectory = figure1b(make_top).values()
+    input_list, = figure1b(make_top).values()
+    # if isinstance(trajectory, list):
+    #     logging.info(
+    #         'Generated trajectories: '
+    #         ', '.join(filename for filename in trajectory)
+    #     )
+    # else:
+    #     logging.info(f'Generated trajectory {trajectory}.')
 
     folding_loop = figure1c(input_list)
     logging.info(f'Folding loop result: {folding_loop}')
