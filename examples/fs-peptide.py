@@ -194,25 +194,25 @@ def figure1c(input_list):
             })
         logging.info(f'Binding checkpoint {md.output.checkpoint}')
         subgraph.checkpoint = md.output.checkpoint
-        logging.info(f'Setting up rmsd calculation.')
-        rmsd = gmx.commandline_operation(
-            'gmx', ['rms'],
-            input_files={
-                '-s': reference_struct,
-                '-f': md.output.trajectory},
-            output_files={'-o': 'rmsd.xvg'},
-            stdin='Backbone Backbone\n'
-        )
-        logging.info(f'Binding output {rmsd.output.file}')
-        subgraph.min_rms = numeric_min(
-            xvg_to_array(rmsd.output.file['-o']).output.data).output.data
+        # logging.info(f'Setting up rmsd calculation.')
+        # rmsd = gmx.commandline_operation(
+        #     'gmx', ['rms'],
+        #     input_files={
+        #         '-s': reference_struct,
+        #         '-f': md.output.trajectory},
+        #     output_files={'-o': 'rmsd.xvg'},
+        #     stdin='Backbone Backbone\n'
+        # )
+        # logging.info(f'Binding output {rmsd.output.file}')
+        # subgraph.min_rms = numeric_min(
+        #     xvg_to_array(rmsd.output.file['-o']).output.data).output.data
         subgraph.found_native = less_than(lhs=subgraph.min_rms, rhs=0.3).output.data
         logging.info(f'Bound result {subgraph.found_native}')
-        subgraph.found_native = False
         subgraph.incomplete = gmx.logical_not(subgraph.found_native)
 
     folding_loop = gmx.while_loop(operation=subgraph,
                                   condition=subgraph.incomplete)()
+    # condition = gmx.logical_not(subgraph.found_native))()
     logging.info('Beginning folding_loop.')
     folding_loop.run()
     logging.info(f'Finished folding_loop at iteration {subgraph.iteration}.')
