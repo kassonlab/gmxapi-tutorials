@@ -5,7 +5,7 @@ nsteps                   = 500000000
 comm-mode                = Linear
 nstcomm                  = 1
 
-nstxout                  = 1000000
+nstxout                  = 1
 nstvout                  = 0
 nstfout                  = 0
 nstcheckpoint            = 1000

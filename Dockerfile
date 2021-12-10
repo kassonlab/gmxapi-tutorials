@@ -68,6 +68,8 @@ RUN . $VENV/bin/activate && \
     python -c 'import run_brer' && \
     rm -rf run-brer-master.tar.gz
 
+RUN $VENV/bin/pip install pydevd-pycharm~=213.5744.248
+
 #ARG GMXAPI_URL="https://drive.google.com/uc?export=download&id=1-n-b6hmUNjaF9h4VBw0SkCKQbUIAvDsL"
 #
 #RUN . $VENV/bin/activate && \
@@ -76,10 +78,10 @@ RUN . $VENV/bin/activate && \
 #    pip install ./gmxapi-0.3.0b3.tgz && \
 #    python -c 'import gmxapi' && \
 #    rm ./gmxapi-0.3.0b3.tgz
-COPY --chown=tutorial:tutorial gmxapi-0.3.0b2.tar.gz /home/tutorial/
+COPY --chown=tutorial:tutorial gmxapi-0.3.0b3.tar.gz /home/tutorial/
 RUN . $VENV/bin/activate && \
     . /usr/local/gromacs/bin/GMXRC && \
-    $VENV/bin/pip install /home/tutorial/gmxapi-0.3.0b2.tar.gz
+    $VENV/bin/pip install /home/tutorial/gmxapi-0.3.0b3.tar.gz
 
 #ARG PEPTIDE_INPUTS="https://drive.google.com/uc?export=download&id=1eNBBdGQ8fjbaaAG6kQMBcVnhb7aRFmQ6"
 #
@@ -91,7 +93,8 @@ RUN . $VENV/bin/activate && \
 ADD --chown=tutorial:tutorial input_files /home/tutorial/input_files
 ADD --chown=tutorial:tutorial examples /home/tutorial/examples
 
-CMD mpiexec -n 1 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/examples/fs-peptide.py
+CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/examples/fs-peptide.py
+#CMD /bin/bash
 
 # MPI tests can be run in this container without requiring MPI on the host.
 # (We suggest running your docker engine with multiple CPU cores allocated.)

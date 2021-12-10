@@ -58,7 +58,8 @@ for handler in logging.getLogger().handlers:
 # Debugging in PyCharm
 # if rank_number == 0:
 #     import pydevd_pycharm
-#     pydevd_pycharm.settrace('localhost', port=12345, stdoutToServer=True, stderrToServer=True)
+#     pydevd_pycharm.settrace('127.0.0.1', port=12345, stdoutToServer=True,
+#                             stderrToServer=True)
 
 #
 # Define some helpers
@@ -212,7 +213,7 @@ def figure1c(input_list):
     subgraph = gmx.subgraph(
         variables={
             'found_native': False,
-            'checkpoint': '',
+            'checkpoint': 'state.cpt',
             'min_rms': 1e6})
     with subgraph:
         md = gmx.mdrun(
