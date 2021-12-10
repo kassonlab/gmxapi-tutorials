@@ -16,6 +16,7 @@ size 50, activate your gmxapi Python virtual environment and run
 import logging
 import os
 import typing
+import warnings
 from pathlib import Path
 
 # Configure logging module before gmxapi.
@@ -122,7 +123,12 @@ def xvg_to_array(path: str, output):
     logging.info(f'Reading xvg file {path}.')
     data = numpy.genfromtxt(path, comments='@', skip_header=14)
     logging.info(f'Read array shape {data.shape} from {path}.')
-    output.data = data
+    if len(data.shape) == 1:
+        # Trajectory was too short. Only a single line was read.
+        assert data.shape[0] == 2
+        data = data.reshape((1, 2))
+    assert len(data.shape) == 2
+    output.data = data[:, 1]
 
 
 ######################
@@ -218,19 +224,17 @@ def figure1c(input_list):
             })
 
         subgraph.checkpoint = join_path(md.output._work_dir, 'state.cpt').output.data
-        # rmsd = gmx.commandline_operation(
-        #     'gmx', ['rms'],
-        #     input_files={
-        #         '-s': reference_struct,
-        #         '-f': md.output.trajectory},
-        #     output_files={'-o': 'rmsd.xvg'},
-        #     stdin='Backbone Backbone\n'
-        # )
-        # subgraph.min_rms = numeric_min(
-        #     xvg_to_array(rmsd.output.file['-o']).output.data).output.data
+        rmsd = gmx.commandline_operation(
+            'gmx', ['rms'],
+            input_files={
+                '-s': reference_struct,
+                '-f': md.output.trajectory},
+            output_files={'-o': 'rmsd.xvg'},
+            stdin='Backbone Backbone\n'
+        )
+        subgraph.min_rms = numeric_min(
+            xvg_to_array(rmsd.output.file['-o']).output.data).output.data
         subgraph.found_native = less_than(lhs=subgraph.min_rms, rhs=0.3).output.data
-        # Remove the following when rmsd is working.
-        subgraph.min_rms = 0.
 
     folding_loop = gmx.while_loop(
         operation=subgraph,
@@ -238,7 +242,7 @@ def figure1c(input_list):
         condition=gmx.logical_not(subgraph.found_native))()
     logging.info('Beginning folding_loop.')
     folding_loop.run()
-    logging.info(f'Finished folding_loop at iteration {subgraph.iteration}.')
+    logging.info(f'Finished folding_loop. min_rms: {folding_loop.output.min_rms.result()}')
     return folding_loop
 
 

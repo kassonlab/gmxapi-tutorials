@@ -91,7 +91,7 @@ RUN . $VENV/bin/activate && \
 ADD --chown=tutorial:tutorial input_files /home/tutorial/input_files
 ADD --chown=tutorial:tutorial examples /home/tutorial/examples
 
-CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/examples/fs-peptide.py
+CMD mpiexec -n 1 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/examples/fs-peptide.py
 
 # MPI tests can be run in this container without requiring MPI on the host.
 # (We suggest running your docker engine with multiple CPU cores allocated.)
