@@ -189,7 +189,8 @@ def figure1c(input_list):
             input_list,
             runtime_args={
                 '-cpi': subgraph.checkpoint,
-                '-maxh': '.001'
+                '-maxh': '.001',
+                '-noappend': None
             })
         logging.info(f'Binding checkpoint {md.output.checkpoint}')
         subgraph.checkpoint = md.output.checkpoint
