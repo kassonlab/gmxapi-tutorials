@@ -18,8 +18,7 @@ or
 
 Download archives from the following URLs.
 
-* GROMACS 2022: https://gitlab.com/gromacs/gromacs/-/archive/master/gromacs-master.tar.bz2
-  *TODO: update with official release candidate*
+* GROMACS 2022: https://gitlab.com/gromacs/gromacs/-/archive/v2022-beta2/gromacs-v2022-beta2.tar.bz2
 * gmxapi 0.3: gmxapi-0.3.0b2.tar.gz
   *TODO: update with gmxapi-0.3.0b3.tar.gz*
   Example: `wget 'https://drive.google.com/uc?export=download&id=1-n-b6hmUNjaF9h4VBw0SkCKQbUIAvDsL' -O gmxapi-0.3.0b2.tgz`
@@ -36,16 +35,16 @@ Sample input files for these examples have been shared from previous research pr
 
 BRER workflow sample inputs: [DOI 10.5281/zenodo.5122931](https://zenodo.org/record/5122931)
 
-Funnelweb spider peptide [structure files](https://drive.google.com/drive/folders/1dhAgSSwrnoddeQBhtLOiZfhJFODZQbzJ?usp=sharing) from
+Funnelweb spider peptide ([`input_files/fs-peptide/`](input_files/fs-peptide/)):
 Sorin and Pande, 2005; doi:10.1529/biophysj.104.051938 (used with permission).
 
 ## Alternative: Docker
 
-If you prefer to use a containerized installation of the software and examples, and you are comfortable with Docker, see the Dockerfile in this repository.
+If you prefer to use a containerized installation of the software and examples, and you are comfortable with Docker, see the [Dockerfile](Dockerfile) in this repository.
 
 ## Example scripts
 
-[examples/figure1.py]
+[examples/fs-peptide.py](examples/fs-peptide.py)
 
 ## Caveats (TODOs)
 

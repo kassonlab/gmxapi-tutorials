@@ -1,16 +1,16 @@
 """Complete working example for figure 1.
 
 Prerequisites:
-    Make sure the input files are available locally. The script will first look for an
-    INPUT_DIR environment variable before defaulting to `./input/` for the directory
-    `fs-peptide`
+    This script assumes it is running in a local copy of the
+    https://github.com/kassonlab/gmxapi-tutorials repository. It will look for input
+    files relative to the location of this file.
 
 After installing GROMACS and gmxapi, execute this script with a Python 3.7+ interpreter.
 
 For a trajectory ensemble, use `mpiexec` and `mpi4py`. For example, for an ensemble of
 size 50, activate your gmxapi Python virtual environment and run
 
-    mpiexec -n 50 `which python` -m mpi4py figure1.py
+    mpiexec -n 50 `which python` -m mpi4py fs-peptide.py
 
 """
 import logging
@@ -109,10 +109,10 @@ def xvg_to_array(path: str, output):
 # Confirm inputs exist
 #
 
-input_dir = os.getenv('INPUT_DIR', default=os.path.join('.', 'input'))
-input_dir = Path(input_dir) / 'fs-peptide'
+_script_dir = Path(__file__)
+input_dir = _script_dir.parent.parent.resolve() / 'input_files' / 'fs-peptide'
 if not all(p.exists() for p in (input_dir, input_dir / 'start0.pdb', input_dir / 'ref.pdb')):
-    raise RuntimeError('Missing input files.')
+    raise RuntimeError(f'Did not find input files in {input_dir}.')
 reference_struct = input_dir / 'ref.pdb'
 
 
@@ -172,7 +172,7 @@ def figure1b(make_top):
 
     input_list = gmx.read_tpr(tpr_input)
 
-    md = gmx.mdrun(input_list, runtime_args={'-maxh': str(0.001)})
+    md = gmx.mdrun(input_list, runtime_args={'-maxh': '0.001'})
     md.run()
 
     return {
@@ -183,13 +183,14 @@ def figure1b(make_top):
 def figure1c(input_list):
     """Figure 1c: looping and custom operations"""
     subgraph = gmx.subgraph(variables={'found_native': False, 'checkpoint': '',
-                                       'min_rms': 1e6, 'incomplete': True, 'iteration':
-                                           0})
+                                       'min_rms': 1e6, 'incomplete': True})
     with subgraph:
-        # subgraph.iteration = subgraph.iteration + 1
-        logging.info(f'Iteration {subgraph.iteration}.')
-        md = gmx.mdrun(input_list, runtime_args={'-cpi': subgraph.checkpoint, '-maxh':
-            str(.001)})
+        md = gmx.mdrun(
+            input_list,
+            runtime_args={
+                '-cpi': subgraph.checkpoint,
+                '-maxh': '.001'
+            })
         logging.info(f'Binding checkpoint {md.output.checkpoint}')
         subgraph.checkpoint = md.output.checkpoint
         logging.info(f'Setting up rmsd calculation.')
@@ -199,7 +200,7 @@ def figure1c(input_list):
                 '-s': reference_struct,
                 '-f': md.output.trajectory},
             output_files={'-o': 'rmsd.xvg'},
-            stdin='Backbone Backbone'
+            stdin='Backbone Backbone\n'
         )
         logging.info(f'Binding output {rmsd.output.file}')
         subgraph.min_rms = numeric_min(
