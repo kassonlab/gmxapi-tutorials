@@ -9,7 +9,7 @@ Python examples and tutorial material for gmxapi 0.3 on GROMACS 2022
 
 ### Installation
 
-Get the gmxapi 2022 software archive (Zenodo link? Google Drive link?)
+Get the gmxapi 2022 software archive (contains Gromacs2022 beta2, gmxapi 0.3, and run_brer files):
 https://drive.google.com/drive/folders/1-i4jY22Bg2jDtvfNKBlYuQwJOq08qraB?usp=sharing
 
 Example: `wget 'https://drive.google.com/uc?export=download&id=1-n-b6hmUNjaF9h4VBw0SkCKQbUIAvDsL' -O gmxapi-0.3.0b2.tgz`
@@ -32,8 +32,8 @@ Sample input files for these examples have been shared from previous research pr
 
 BRER workflow sample inputs: [DOI 10.5281/zenodo.5122931](https://zenodo.org/record/5122931)
 
-Funnelweb spider peptide ([`input_files/fs-peptide/`](input_files/fs-peptide/)):
-Sorin and Pande, 2005; doi:10.1529/biophysj.104.051938 (used with permission).
+FS peptide ([`input_files/fs-peptide/`](input_files/fs-peptide/)):
+Sorin and Pande, Biophys J. 2005 Apr; 88(4): 2472–2493; doi:10.1529/biophysj.104.051938 (used with permission).
 
 ## Alternative: Docker
 
