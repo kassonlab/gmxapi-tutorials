@@ -19,13 +19,10 @@ or
 Download archives from the following URLs.
 
 * GROMACS 2022: https://gitlab.com/gromacs/gromacs/-/archive/v2022-beta2/gromacs-v2022-beta2.tar.bz2
-* gmxapi 0.3: gmxapi-0.3.0b2.tar.gz
-  *TODO: update with gmxapi-0.3.0b3.tar.gz*
-  Example: `wget 'https://drive.google.com/uc?export=download&id=1-n-b6hmUNjaF9h4VBw0SkCKQbUIAvDsL' -O gmxapi-0.3.0b2.tgz`
+* gmxapi 0.3: gmxapi-0.3.0b3.tar.gz
+  Example: https://pypi.org/project/gmxapi/0.3.0b3/#files
 * Run_brer 2.0 (master branch) https://github.com/kassonlab/run_brer/ or https://github.com/kassonlab/run_brer/archive/master.tar.gz
-  *TODO: tag 2.0?*
 * Brer-plugin current master https://github.com/kassonlab/brer_plugin or https://github.com/kassonlab/brer_plugin/archive/master.tar.gz
-  *TODO: tag 2.0?*
 
 Refer to installation instructions from the software archive or from the respective project web sites.
 

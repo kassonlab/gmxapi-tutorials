@@ -68,27 +68,14 @@ RUN . $VENV/bin/activate && \
     python -c 'import run_brer' && \
     rm -rf run-brer-master.tar.gz
 
-RUN $VENV/bin/pip install pydevd-pycharm~=213.5744.248
+ARG GMXAPI_URL="https://files.pythonhosted.org/packages/82/4a/0f5fb4c880fc1149dadfdedc3fb240c64eb177bca78584ba6d6bb4dddf86/gmxapi-0.3.0b3.tar.gz"
 
-#ARG GMXAPI_URL="https://drive.google.com/uc?export=download&id=1-n-b6hmUNjaF9h4VBw0SkCKQbUIAvDsL"
-#
-#RUN . $VENV/bin/activate && \
-#    wget --no-check-certificate $GMXAPI_URL -O gmxapi-0.3.0b3.tgz && \
-#    . /usr/local/gromacs/bin/GMXRC && \
-#    pip install ./gmxapi-0.3.0b3.tgz && \
-#    python -c 'import gmxapi' && \
-#    rm ./gmxapi-0.3.0b3.tgz
-COPY --chown=tutorial:tutorial gmxapi-0.3.0b3.tar.gz /home/tutorial/
 RUN . $VENV/bin/activate && \
+    wget --no-check-certificate $GMXAPI_URL -O gmxapi-0.3.0b3.tgz && \
     . /usr/local/gromacs/bin/GMXRC && \
-    $VENV/bin/pip install /home/tutorial/gmxapi-0.3.0b3.tar.gz
-
-#ARG PEPTIDE_INPUTS="https://drive.google.com/uc?export=download&id=1eNBBdGQ8fjbaaAG6kQMBcVnhb7aRFmQ6"
-#
-#RUN mkdir $HOME/input && \
-#    cd $HOME/input && \
-#    wget $PEPTIDE_INPUTS -O fs-peptide.tgz && \
-#    tar zxvf fs-peptide.tgz
+    pip install ./gmxapi-0.3.0b3.tgz && \
+    python -c 'import gmxapi' && \
+    rm ./gmxapi-0.3.0b3.tgz
 
 ADD --chown=tutorial:tutorial input_files /home/tutorial/input_files
 ADD --chown=tutorial:tutorial examples /home/tutorial/examples

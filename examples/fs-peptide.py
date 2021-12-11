@@ -16,7 +16,6 @@ size 50, activate your gmxapi Python virtual environment and run
 import logging
 import os
 import typing
-import warnings
 from pathlib import Path
 
 # Configure logging module before gmxapi.
@@ -31,8 +30,8 @@ from gmxapi.exceptions import UsageError
 
 logging.info(f'gmxapi Python package version {gmx.__version__}')
 assert gmx.version.has_feature('mdrun_runtime_args')
-# assert gmx.version.has_feature('container_futures')
-# assert gmx.version.has_feature('mdrun_checkpoint_output')
+assert gmx.version.has_feature('container_futures')
+assert gmx.version.has_feature('mdrun_checkpoint_output')
 
 
 try:
@@ -54,12 +53,6 @@ log_format = '%(levelname)s %(name)s:%(filename)s:%(lineno)s %(rank_tag)s%(messa
 for handler in logging.getLogger().handlers:
     handler.setFormatter(logging.Formatter(log_format))
 
-# TODO: Absolutely don't forget to remove the following!
-# Debugging in PyCharm
-# if rank_number == 0:
-#     import pydevd_pycharm
-#     pydevd_pycharm.settrace('127.0.0.1', port=12345, stdoutToServer=True,
-#                             stderrToServer=True)
 
 #
 # Define some helpers
@@ -199,13 +192,12 @@ def figure1b(make_top):
 
     input_list = gmx.read_tpr(tpr_input)
 
-    # md = gmx.mdrun(input_list, runtime_args={'-maxh': '0.001'})
-    # md.run()
+    md = gmx.mdrun(input_list, runtime_args={'-maxh': '2'})
+    md.run()
 
     return {
         'input_list': input_list,
-        # 'trajectory': md.output.trajectory.result()
-    }
+        'trajectory': md.output.trajectory.result()}
 
 
 def figure1c(input_list):
@@ -213,18 +205,18 @@ def figure1c(input_list):
     subgraph = gmx.subgraph(
         variables={
             'found_native': False,
-            'checkpoint': 'state.cpt',
+            'checkpoint': '',
             'min_rms': 1e6})
     with subgraph:
         md = gmx.mdrun(
             input_list,
             runtime_args={
                 '-cpi': subgraph.checkpoint,
-                '-maxh': '.001',
+                '-maxh': '2',
                 '-noappend': None
             })
 
-        subgraph.checkpoint = join_path(md.output._work_dir, 'state.cpt').output.data
+        subgraph.checkpoint = md.output.checkpoint
         rmsd = gmx.commandline_operation(
             'gmx', ['rms'],
             input_files={
@@ -239,7 +231,6 @@ def figure1c(input_list):
 
     folding_loop = gmx.while_loop(
         operation=subgraph,
-        # condition=subgraph.incomplete)()
         condition=gmx.logical_not(subgraph.found_native))()
     logging.info('Beginning folding_loop.')
     folding_loop.run()
@@ -251,15 +242,14 @@ if __name__ == '__main__':
     make_top = figure1a()
     logging.info('Created a handle to a commandline operation.')
 
-    # input_list, trajectory = figure1b(make_top).values()
-    input_list, = figure1b(make_top).values()
-    # if isinstance(trajectory, list):
-    #     logging.info(
-    #         'Generated trajectories: '
-    #         ', '.join(filename for filename in trajectory)
-    #     )
-    # else:
-    #     logging.info(f'Generated trajectory {trajectory}.')
+    input_list, trajectory = figure1b(make_top).values()
+    if isinstance(trajectory, list):
+        logging.info(
+            'Generated trajectories: '
+            ', '.join(filename for filename in trajectory)
+        )
+    else:
+        logging.info(f'Generated trajectory {trajectory}.')
 
     folding_loop = figure1c(input_list)
     logging.info(f'Folding loop result: {folding_loop}')
