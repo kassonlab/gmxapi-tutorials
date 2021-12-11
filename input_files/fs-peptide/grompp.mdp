@@ -1,0 +1,54 @@
+define                   =
+integrator               = md
+dt                       = 0.002
+nsteps                   = 500000000
+comm-mode                = Linear
+nstcomm                  = 1
+
+nstxout                  = 1000
+nstvout                  = 0
+nstfout                  = 0
+nstcheckpoint            = 1000
+nstlog                   = 1000
+nstenergy                = 10000
+nstxtcout                = 500000
+xtc_precision            = 1000
+
+cutoff-scheme            = Verlet
+nstlist                  = 10
+ns_type                  = grid
+pbc                      = xyz
+periodic_molecules       = no
+rlist                    = 1.2
+
+coulombtype              = pme
+rcoulomb                 = 1.2
+epsilon_r                = 1
+epsilon_rf               = 1
+vdw_type                 = cutoff
+rvdw                     = 1.2
+DispCorr                 = No
+fourierspacing           = 0.15
+fourier_nx               = 0
+fourier_ny               = 0
+fourier_nz               = 0
+pme_order                = 4
+verlet-buffer-tolerance  = 1e-3
+
+tcoupl                   = V-rescale
+tc-grps                  = System
+tau_t                    = 10.0
+ref_t                    = 310
+Pcoupl                   = Berendsen
+Pcoupltype               = Isotropic
+tau_p                    = 10.0
+compressibility          = 5e-5
+ref_p                    = 1.0
+refcoord_scaling         = COM
+
+gen_vel                  = yes
+gen_temp                 = 310
+gen_seed                 = -1
+
+constraints              = h-bonds
+constraint_algorithm     = Lincs
