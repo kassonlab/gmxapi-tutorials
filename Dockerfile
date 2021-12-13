@@ -4,7 +4,7 @@
 #     docker build -t gmxapi-tutorial .
 #
 # Run an interactive shell:
-#     docker run --rm -ti gmxapi-tutorial
+#     docker run --rm -ti gmxapi-tutorial bash
 #     . venv/bin/activate
 #     cd examples
 #     python
