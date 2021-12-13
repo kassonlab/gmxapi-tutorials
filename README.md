@@ -16,8 +16,6 @@ Get the gmxapi 2022 software stack
 From an archive (contains Gromacs2022 beta2, gmxapi 0.3, and run_brer files):
 https://drive.google.com/drive/folders/1-i4jY22Bg2jDtvfNKBlYuQwJOq08qraB?usp=sharing
 
-Example: `wget 'https://drive.google.com/uc?export=download&id=1-n-b6hmUNjaF9h4VBw0SkCKQbUIAvDsL' -O gmxapi-0.3.0b2.tgz`
-
 or
 
 #### Option 2: Download packages
