@@ -19,8 +19,6 @@ import typing
 from pathlib import Path
 
 # Configure logging module before gmxapi.
-from gmxapi.utility import join_path
-
 logging.basicConfig(level=logging.DEBUG)
 
 import gmxapi as gmx

@@ -22,11 +22,11 @@ or
 
 Download archives from the following URLs.
 
-* GROMACS 2022: https://gitlab.com/gromacs/gromacs/-/archive/v2022-beta2/gromacs-v2022-beta2.tar.bz2
-* gmxapi 0.3: gmxapi-0.3.0b3.tar.gz
-  Example: https://pypi.org/project/gmxapi/0.3.0b3/#files
-* Run_brer 2.0 (master branch) https://github.com/kassonlab/run_brer/ or https://github.com/kassonlab/run_brer/archive/master.tar.gz
-* Brer-plugin current master https://github.com/kassonlab/brer_plugin or https://github.com/kassonlab/brer_plugin/archive/master.tar.gz
+* GROMACS 2022: https://gitlab.com/gromacs/gromacs/-/archive/v2022-rc1/gromacs-v2022-rc1.tar.gz
+* gmxapi 0.3: gmxapi-0.3.0b5.tar.gz
+  (Download from https://pypi.org/project/gmxapi/0.3.0b5/#files or use the [`--pre`](https://pip.pypa.io/en/stable/cli/pip_install/#pre-release-versions) option with `pip`
+* *Optional* Run_brer 2.0 (master branch) https://github.com/kassonlab/run_brer/ or https://github.com/kassonlab/run_brer/archive/master.tar.gz
+* *Optional* Brer-plugin current master https://github.com/kassonlab/brer_plugin or https://github.com/kassonlab/brer_plugin/archive/master.tar.gz
 
 ### Install the software
 
@@ -34,7 +34,7 @@ Refer to installation instructions from the software archive or from the respect
 
 ### Alternative: Docker
 
-If you prefer to use a containerized installation of the software and examples, and you are comfortable with Docker, see the [Dockerfile](Dockerfile) in this repository.
+If you prefer to use a containerized installation of the software and examples, and you are comfortable with Docker, see the [Dockerfile](Dockerfile) in this repository or pull `gmxapi/tutorial` from [DockerHub](https://hub.docker.com/repository/docker/gmxapi/tutorial).
 
 ### Sample inputs
 

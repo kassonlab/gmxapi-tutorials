@@ -1,10 +1,13 @@
 # Provide an easy-to-reproduce environment in which to test full Python functionality.
 
 # Build (requires Docker 17.05 or higher):
-#     docker build -t gmxapi-tutorial .
+#     docker build -t gmxapi/tutorial .
+#
+# Run the jupyter notebook server
+#     docker run --rm -ti -p 8888:8888 gmxapi/tutorial
 #
 # Run an interactive shell:
-#     docker run --rm -ti gmxapi-tutorial bash
+#     docker run --rm -ti gmxapi/tutorial bash
 #     . venv/bin/activate
 #     cd examples
 #     python
@@ -32,7 +35,7 @@ RUN python3 -m venv $VENV
 RUN . $VENV/bin/activate && \
     pip install --no-cache-dir --upgrade pip setuptools wheel
 
-FROM gmxapi/gromacs-mpich:2022b2 as gromacs
+FROM gmxapi/gromacs-mpich:2022rc1 as gromacs
 
 FROM python-base
 
@@ -70,18 +73,17 @@ RUN . $VENV/bin/activate && \
     python -c 'import run_brer' && \
     rm -rf run-brer-master.tar.gz
 
-ARG GMXAPI_URL="https://files.pythonhosted.org/packages/82/4a/0f5fb4c880fc1149dadfdedc3fb240c64eb177bca78584ba6d6bb4dddf86/gmxapi-0.3.0b3.tar.gz"
+ARG GMXAPI_URL="https://files.pythonhosted.org/packages/f7/b8/fa7398536b18f6bb2fc80fa98ace1072b91049b7ba5c14eac997d230d23b/gmxapi-0.3.0b5.tar.gz"
 
 RUN . $VENV/bin/activate && \
-    wget --no-check-certificate $GMXAPI_URL -O gmxapi-0.3.0b3.tgz && \
     . /usr/local/gromacs/bin/GMXRC && \
-    pip install --no-cache-dir ./gmxapi-0.3.0b3.tgz && \
-    python -c 'import gmxapi' && \
-    rm ./gmxapi-0.3.0b3.tgz
+    pip install --no-cache-dir $GMXAPI_URL && \
+    python -c 'import gmxapi'
 
 ADD --chown=tutorial:tutorial input_files /home/tutorial/input_files
 ADD --chown=tutorial:tutorial examples /home/tutorial/examples
 ADD --chown=tutorial:tutorial gmxapi-introduction /home/tutorial/gmxapi-introduction
+ADD --chown=tutorial:tutorial input_files /home/tutorial/gmxapi-introduction/input_files
 
 ADD .entry_points/ /docker_entry_points/
 
@@ -89,7 +91,7 @@ CMD ["/docker_entry_points/notebook"]
 
 #CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/examples/fs-peptide.py
 #CMD /bin/bash
-#CMD $VENV/bin/jupyter notebook
+#CMD $VENV/bin/jupyter notebook --ip=0.0.0.0 --no-browser  --NotebookApp.custom_display_url='http://localhost:8888/'
 
 # MPI tests can be run in this container without requiring MPI on the host.
 # (We suggest running your docker engine with multiple CPU cores allocated.)
