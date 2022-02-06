@@ -1,0 +1,7 @@
+# Note: while we require a beta version of gmxapi, pip must be called with
+#     pip install --pre -r requirements.txt
+gmxapi>=0.3.0b5
+jupyter
+mpi4py
+numpy
+pip
