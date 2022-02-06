@@ -127,8 +127,8 @@ def xvg_to_array(path: str, output):
 # Confirm inputs exist
 #
 
-_script_dir = Path(__file__)
-input_dir = _script_dir.parent.parent.resolve() / 'input_files' / 'fs-peptide'
+_script_dir = Path(__file__).parent
+input_dir = _script_dir.parent.resolve() / 'input_files' / 'fs-peptide'
 if not all(p.exists() for p in (input_dir, input_dir / 'start0.pdb', input_dir / 'ref.pdb')):
     raise RuntimeError(f'Did not find input files in {input_dir}.')
 reference_struct = input_dir / 'ref.pdb'
