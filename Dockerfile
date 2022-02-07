@@ -80,10 +80,11 @@ RUN . $VENV/bin/activate && \
     pip install --no-cache-dir $GMXAPI_URL && \
     python -c 'import gmxapi'
 
-ADD --chown=tutorial:tutorial input_files /home/tutorial/input_files
-ADD --chown=tutorial:tutorial examples /home/tutorial/examples
-ADD --chown=tutorial:tutorial gmxapi-introduction /home/tutorial/gmxapi-introduction
-ADD --chown=tutorial:tutorial input_files /home/tutorial/gmxapi-introduction/input_files
+ENV PROJECT_DIR /home/tutorial/AdvancedGromacsCourse/gmxapi-tutorials
+ADD --chown=tutorial:tutorial input_files $PROJECT_DIR/input_files
+ADD --chown=tutorial:tutorial examples $PROJECT_DIR/examples
+ADD --chown=tutorial:tutorial gmxapi-introduction $PROJECT_DIR/gmxapi-introduction
+ADD --chown=tutorial:tutorial input_files $PROJECT_DIR/input_files
 
 ADD .entry_points/ /docker_entry_points/
 
