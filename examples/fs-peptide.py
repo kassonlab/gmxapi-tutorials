@@ -19,7 +19,7 @@ import typing
 from pathlib import Path
 
 # Configure logging module before gmxapi.
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 import gmxapi as gmx
 import gmxapi.abc
@@ -190,12 +190,13 @@ def figure1b(make_top):
 
     input_list = gmx.read_tpr(tpr_input)
 
-    md = gmx.mdrun(input_list, runtime_args={'-maxh': '2'})
-    md.run()
+    # md = gmx.mdrun(input_list, runtime_args={'-maxh': '2'})
+    # md.run()
 
     return {
         'input_list': input_list,
-        'trajectory': md.output.trajectory.result()}
+        # 'trajectory': md.output.trajectory.result()
+    }
 
 
 def figure1c(input_list):
@@ -210,7 +211,7 @@ def figure1c(input_list):
             input_list,
             runtime_args={
                 '-cpi': subgraph.checkpoint,
-                '-maxh': '2',
+                '-maxh': '0.01',
                 '-noappend': None
             })
 
@@ -225,7 +226,7 @@ def figure1c(input_list):
         )
         subgraph.min_rms = numeric_min(
             xvg_to_array(rmsd.output.file['-o']).output.data).output.data
-        subgraph.found_native = less_than(lhs=subgraph.min_rms, rhs=0.3).output.data
+        subgraph.found_native = less_than(lhs=subgraph.min_rms, rhs=0.5).output.data
 
     folding_loop = gmx.while_loop(
         operation=subgraph,
@@ -240,14 +241,9 @@ if __name__ == '__main__':
     make_top = figure1a()
     logging.info('Created a handle to a commandline operation.')
 
-    input_list, trajectory = figure1b(make_top).values()
-    if isinstance(trajectory, list):
-        logging.info(
-            'Generated trajectories: '
-            ', '.join(filename for filename in trajectory)
-        )
-    else:
-        logging.info(f'Generated trajectory {trajectory}.')
+    # input_list, trajectory = figure1b(make_top).values()
+    input_list, = figure1b(make_top).values()
+    assert input_list.output.ensemble_width == ensemble_size
 
     folding_loop = figure1c(input_list)
     logging.info(f'Folding loop result: {folding_loop}')
