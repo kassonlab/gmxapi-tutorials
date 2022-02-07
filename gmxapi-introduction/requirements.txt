@@ -1,6 +1,0 @@
-jupyter
-jedi!=0.18.0
-gmxapi>=0.2
-mpi4py
-networkx
-numpy
