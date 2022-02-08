@@ -246,7 +246,9 @@ def figure1c(input_list):
 
     folding_loop = gmx.while_loop(
         operation=subgraph,
-        condition=gmx.logical_not(subgraph.found_native))()
+        condition=gmx.logical_not(subgraph.found_native),
+        # max_iteration=1
+    )()
     logging.info('Beginning folding_loop.')
     folding_loop.run()
     logging.info(f'Finished folding_loop. min_rms: {folding_loop.output.min_rms.result()}')
@@ -262,4 +264,5 @@ if __name__ == '__main__':
     assert input_list.output.ensemble_width == ensemble_size
 
     folding_loop = figure1c(input_list)
-    logging.info(f'Folding loop result: {folding_loop}')
+    results = {key: getattr(folding_loop.output, key).result() for key in folding_loop.output.keys()}
+    logging.info(f'Folding loop result: {results}')
