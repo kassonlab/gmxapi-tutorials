@@ -13,6 +13,7 @@ size 50, activate your gmxapi Python virtual environment and run
     mpiexec -n 50 `which python` -m mpi4py fs-peptide.py
 
 """
+import argparse
 import logging
 import os
 import typing
@@ -46,11 +47,25 @@ else:
     rank_tag = 'rank{}:'.format(rank_number)
 
 
+# NOTE: This is specific to the
+allocation_size = 40
+
+
 # Update the logging output.
 log_format = '%(levelname)s %(name)s:%(filename)s:%(lineno)s %(rank_tag)s%(message)s'
 for handler in logging.getLogger().handlers:
     handler.setFormatter(logging.Formatter(log_format))
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--cores',
+    default=40,
+    type=int,
+    help='The number of cores allocated in the job.'
+)
+args = parser.parse_args()
+allocation_size = args.cores
 
 #
 # Define some helpers
@@ -212,7 +227,8 @@ def figure1c(input_list):
             runtime_args={
                 '-cpi': subgraph.checkpoint,
                 '-maxh': '0.01',
-                '-noappend': None
+                '-noappend': None,
+                '-nt': str(allocation_size // ensemble_size)
             })
 
         subgraph.checkpoint = md.output.checkpoint
