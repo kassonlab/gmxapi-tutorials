@@ -90,7 +90,7 @@ ADD .entry_points/ /docker_entry_points/
 
 CMD ["/docker_entry_points/notebook"]
 
-#CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/examples/fs-peptide.py
+#CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/AdvancedGromacsCourse/gmxapi-tutorials/examples/fs-peptide.py
 #CMD /bin/bash
 #CMD $VENV/bin/jupyter notebook --ip=0.0.0.0 --no-browser  --NotebookApp.custom_display_url='http://localhost:8888/'
 
