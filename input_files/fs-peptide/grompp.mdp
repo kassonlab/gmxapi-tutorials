@@ -1,22 +1,17 @@
-define                   =
 integrator               = md
 dt                       = 0.002
 nsteps                   = 500000000
 comm-mode                = Linear
-nstcomm                  = 1
 
 nstxout                  = 1000
 nstvout                  = 0
 nstfout                  = 0
-nstcheckpoint            = 1000
 nstlog                   = 1000
 nstenergy                = 10000
-nstxtcout                = 500000
-xtc_precision            = 1000
+nstxout-compressed       = 500000
+compressed-x-precision   = 1000
 
-cutoff-scheme            = Verlet
 nstlist                  = 10
-ns_type                  = grid
 pbc                      = xyz
 periodic_molecules       = no
 rlist                    = 1.2
