@@ -90,9 +90,8 @@ ADD .entry_points/ /docker_entry_points/
 
 CMD ["/docker_entry_points/notebook"]
 
-CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/AdvancedGromacsCourse/gmxapi-tutorials/examples/fs-peptide.py
+#CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py $PROJECT_DIR/examples/fs-peptide.py
 #CMD /bin/bash
-#CMD $VENV/bin/jupyter notebook --ip=0.0.0.0 --no-browser  --NotebookApp.custom_display_url='http://localhost:8888/'
 
 # MPI tests can be run in this container without requiring MPI on the host.
 # (We suggest running your docker engine with multiple CPU cores allocated.)
