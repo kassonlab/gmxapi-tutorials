@@ -1,11 +1,13 @@
 # gmxapi-tutorials
 Python examples and tutorial material for gmxapi 0.3 on GROMACS 2022
 
+This material is under development at https://github.com/kassonlab/gmxapi-tutorials for contribution to https://tutorials.gromacs.org/
+
 ## First
 
 * Install the required software.
 * Get the sample input files.
-* Clone this repository or download the scripts of interest (from the [examples] directory) for local execution. Refer to internal documentation (comment strings) withint the scripts for more information.
+* Clone this repository or download the scripts of interest (from the [examples] directory) for local execution. Refer to internal documentation (comment strings) within the scripts for more information.
 
 ### Get the software
 
@@ -22,9 +24,9 @@ or
 
 Download archives from the following URLs.
 
-* GROMACS 2022: https://gitlab.com/gromacs/gromacs/-/archive/v2022-rc1/gromacs-v2022-rc1.tar.gz
-* gmxapi 0.3: gmxapi-0.3.0b5.tar.gz
-  (Download from https://pypi.org/project/gmxapi/0.3.0b5/#files or use the [`--pre`](https://pip.pypa.io/en/stable/cli/pip_install/#pre-release-versions) option with `pip`
+* GROMACS 2022: https://gitlab.com/gromacs/gromacs/-/archive/release-2022/gromacs-release-2022.tar.gz
+* gmxapi 0.3: gmxapi-0.3.0b6.tar.gz
+  (Download from https://pypi.org/project/gmxapi/0.3.0b6/#files or use the [`--pre`](https://pip.pypa.io/en/stable/cli/pip_install/#pre-release-versions) option: `pip install --pre gmxapi` (after installing and activating GROMACS 2022)
 * *Optional* Run_brer 2.0 (master branch) https://github.com/kassonlab/run_brer/ or https://github.com/kassonlab/run_brer/archive/master.tar.gz
 * *Optional* Brer-plugin current master https://github.com/kassonlab/brer_plugin or https://github.com/kassonlab/brer_plugin/archive/master.tar.gz
 

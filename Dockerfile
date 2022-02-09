@@ -35,7 +35,7 @@ RUN python3 -m venv $VENV
 RUN . $VENV/bin/activate && \
     pip install --no-cache-dir --upgrade pip setuptools wheel
 
-FROM gmxapi/gromacs-mpich:2022rc1 as gromacs
+FROM gmxapi/gromacs-mpich as gromacs
 
 FROM python-base
 
@@ -73,23 +73,24 @@ RUN . $VENV/bin/activate && \
     python -c 'import run_brer' && \
     rm -rf run-brer-master.tar.gz
 
-ARG GMXAPI_URL="https://files.pythonhosted.org/packages/f7/b8/fa7398536b18f6bb2fc80fa98ace1072b91049b7ba5c14eac997d230d23b/gmxapi-0.3.0b5.tar.gz"
+ARG GMXAPI_URL="https://files.pythonhosted.org/packages/c9/c7/6f759a4564361125bbf5f9e212c5efa319a6044d0cee334c66955ba19832/gmxapi-0.3.0b6.tar.gz"
 
 RUN . $VENV/bin/activate && \
     . /usr/local/gromacs/bin/GMXRC && \
     pip install --no-cache-dir $GMXAPI_URL && \
     python -c 'import gmxapi'
 
-ADD --chown=tutorial:tutorial input_files /home/tutorial/input_files
-ADD --chown=tutorial:tutorial examples /home/tutorial/examples
-ADD --chown=tutorial:tutorial gmxapi-introduction /home/tutorial/gmxapi-introduction
-ADD --chown=tutorial:tutorial input_files /home/tutorial/gmxapi-introduction/input_files
+ENV PROJECT_DIR /home/tutorial/AdvancedGromacsCourse/gmxapi-tutorials
+ADD --chown=tutorial:tutorial input_files $PROJECT_DIR/input_files
+ADD --chown=tutorial:tutorial examples $PROJECT_DIR/examples
+ADD --chown=tutorial:tutorial gmxapi-introduction $PROJECT_DIR/gmxapi-introduction
+ADD --chown=tutorial:tutorial input_files $PROJECT_DIR/input_files
 
 ADD .entry_points/ /docker_entry_points/
 
 CMD ["/docker_entry_points/notebook"]
 
-#CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/examples/fs-peptide.py
+CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/AdvancedGromacsCourse/gmxapi-tutorials/examples/fs-peptide.py
 #CMD /bin/bash
 #CMD $VENV/bin/jupyter notebook --ip=0.0.0.0 --no-browser  --NotebookApp.custom_display_url='http://localhost:8888/'
 
