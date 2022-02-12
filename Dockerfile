@@ -15,7 +15,7 @@
 #     make_top = figure1a()
 #     ...
 
-FROM gmxapi/gromacs-dependencies-mpich:2022b2 as python-base
+FROM gmxapi/gromacs-dependencies-mpich as python-base
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-suggests --no-install-recommends \
@@ -73,7 +73,7 @@ RUN . $VENV/bin/activate && \
     python -c 'import run_brer' && \
     rm -rf run-brer-master.tar.gz
 
-ARG GMXAPI_URL="https://files.pythonhosted.org/packages/c9/c7/6f759a4564361125bbf5f9e212c5efa319a6044d0cee334c66955ba19832/gmxapi-0.3.0b6.tar.gz"
+ARG GMXAPI_URL="https://files.pythonhosted.org/packages/6d/d0/aff56836ac25a84606ea49d55326722ed8ef5a318f804a1d4963215d2b7a/gmxapi-0.3.0.tar.gz"
 
 RUN . $VENV/bin/activate && \
     . /usr/local/gromacs/bin/GMXRC && \

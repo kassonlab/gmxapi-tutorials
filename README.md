@@ -1,5 +1,5 @@
 # gmxapi-tutorials
-Python examples and tutorial material for gmxapi 0.3 on GROMACS 2022
+Python examples and tutorial material for gmxapi 0.3 on GROMACS 2022.
 
 This material is under development at https://github.com/kassonlab/gmxapi-tutorials for contribution to https://tutorials.gromacs.org/
 
@@ -26,26 +26,17 @@ Sorin and Pande, Biophys J. 2005 Apr; 88(4): 2472–2493; doi:10.1529/biophysj.1
 
 Get the gmxapi 2022 software stack
 
-#### Option 1: Google Drive link
-
-From an archive (contains Gromacs2022 beta2, gmxapi 0.3, and run_brer files):
-https://drive.google.com/drive/folders/1-i4jY22Bg2jDtvfNKBlYuQwJOq08qraB?usp=sharing
-
-or
-
-#### Option 2: Download packages
-
 Download archives from the following URLs.
 
 * GROMACS 2022: https://gitlab.com/gromacs/gromacs/-/archive/release-2022/gromacs-release-2022.tar.gz
-* gmxapi 0.3: gmxapi-0.3.0b6.tar.gz
-  (Download from https://pypi.org/project/gmxapi/0.3.0b6/#files or use the [`--pre`](https://pip.pypa.io/en/stable/cli/pip_install/#pre-release-versions) option: `pip install --pre gmxapi` (after installing and activating GROMACS 2022)
+* gmxapi 0.3: gmxapi-0.3.0.tar.gz
+  (Download from https://pypi.org/project/gmxapi/0.3.0/#files or use `pip install gmxapi` (after installing and activating GROMACS 2022)
 * *Optional* Run_brer 2.0 (master branch) https://github.com/kassonlab/run_brer/ or https://github.com/kassonlab/run_brer/archive/master.tar.gz
 * *Optional* Brer-plugin current master https://github.com/kassonlab/brer_plugin or https://github.com/kassonlab/brer_plugin/archive/master.tar.gz
 
 ### Install the software
 
-Refer to installation instructions from the software archive or from the respective project web sites.
+Refer to installation instructions at the respective project websites.
 * [gmxapi on GROMACS](https://manual.gromacs.org/2022-rc1/gmxapi/userguide/install.html), 
 * *run-brer TBD*, 
 * *brer-plugin TBD*.
