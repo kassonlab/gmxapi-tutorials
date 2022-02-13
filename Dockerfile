@@ -15,7 +15,7 @@
 #     make_top = figure1a()
 #     ...
 
-FROM gmxapi/gromacs-dependencies-mpich:2022b2 as python-base
+FROM gmxapi/gromacs-dependencies-mpich as python-base
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-suggests --no-install-recommends \
@@ -35,7 +35,7 @@ RUN python3 -m venv $VENV
 RUN . $VENV/bin/activate && \
     pip install --no-cache-dir --upgrade pip setuptools wheel
 
-FROM gmxapi/gromacs-mpich:2022rc1 as gromacs
+FROM gmxapi/gromacs-mpich as gromacs
 
 FROM python-base
 
@@ -73,25 +73,25 @@ RUN . $VENV/bin/activate && \
     python -c 'import run_brer' && \
     rm -rf run-brer-master.tar.gz
 
-ARG GMXAPI_URL="https://files.pythonhosted.org/packages/f7/b8/fa7398536b18f6bb2fc80fa98ace1072b91049b7ba5c14eac997d230d23b/gmxapi-0.3.0b5.tar.gz"
+ARG GMXAPI_URL="https://files.pythonhosted.org/packages/6d/d0/aff56836ac25a84606ea49d55326722ed8ef5a318f804a1d4963215d2b7a/gmxapi-0.3.0.tar.gz"
 
 RUN . $VENV/bin/activate && \
     . /usr/local/gromacs/bin/GMXRC && \
     pip install --no-cache-dir $GMXAPI_URL && \
     python -c 'import gmxapi'
 
-ADD --chown=tutorial:tutorial input_files /home/tutorial/input_files
-ADD --chown=tutorial:tutorial examples /home/tutorial/examples
-ADD --chown=tutorial:tutorial gmxapi-introduction /home/tutorial/gmxapi-introduction
-ADD --chown=tutorial:tutorial input_files /home/tutorial/gmxapi-introduction/input_files
+ENV PROJECT_DIR /home/tutorial/AdvancedGromacsCourse/gmxapi-tutorials
+ADD --chown=tutorial:tutorial input_files $PROJECT_DIR/input_files
+ADD --chown=tutorial:tutorial examples $PROJECT_DIR/examples
+ADD --chown=tutorial:tutorial gmxapi-introduction $PROJECT_DIR/gmxapi-introduction
+ADD --chown=tutorial:tutorial input_files $PROJECT_DIR/input_files
 
 ADD .entry_points/ /docker_entry_points/
 
 CMD ["/docker_entry_points/notebook"]
 
-#CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py /home/tutorial/examples/fs-peptide.py
+#CMD mpiexec -n 2 /home/tutorial/venv/bin/python -X dev -m mpi4py $PROJECT_DIR/examples/fs-peptide.py
 #CMD /bin/bash
-#CMD $VENV/bin/jupyter notebook --ip=0.0.0.0 --no-browser  --NotebookApp.custom_display_url='http://localhost:8888/'
 
 # MPI tests can be run in this container without requiring MPI on the host.
 # (We suggest running your docker engine with multiple CPU cores allocated.)

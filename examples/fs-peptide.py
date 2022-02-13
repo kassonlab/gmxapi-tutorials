@@ -13,13 +13,14 @@ size 50, activate your gmxapi Python virtual environment and run
     mpiexec -n 50 `which python` -m mpi4py fs-peptide.py
 
 """
+import argparse
 import logging
 import os
 import typing
 from pathlib import Path
 
 # Configure logging module before gmxapi.
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 import gmxapi as gmx
 import gmxapi.abc
@@ -51,6 +52,31 @@ log_format = '%(levelname)s %(name)s:%(filename)s:%(lineno)s %(rank_tag)s%(messa
 for handler in logging.getLogger().handlers:
     handler.setFormatter(logging.Formatter(log_format))
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--cores',
+    default=os.cpu_count(),
+    type=int,
+    help='The total number of cores allocated for the job.'
+)
+parser.add_argument(
+    '--maxh',
+    type=float,
+    default=0.1,
+    help='Maximum time for a single simulation in this module.'
+)
+args = parser.parse_args()
+
+maxh = args.maxh
+
+allocation_size = args.cores
+try:
+    local_cpu_set_size = len(os.sched_getaffinity(0))
+except (NotImplementedError, AttributeError):
+    threads_per_rank = allocation_size // ensemble_size
+else:
+    threads_per_rank = min(local_cpu_set_size, allocation_size // ensemble_size)
 
 #
 # Define some helpers
@@ -127,8 +153,8 @@ def xvg_to_array(path: str, output):
 # Confirm inputs exist
 #
 
-_script_dir = Path(__file__)
-input_dir = _script_dir.parent.parent.resolve() / 'input_files' / 'fs-peptide'
+_script_dir = Path(__file__).parent
+input_dir = _script_dir.parent.resolve() / 'input_files' / 'fs-peptide'
 if not all(p.exists() for p in (input_dir, input_dir / 'start0.pdb', input_dir / 'ref.pdb')):
     raise RuntimeError(f'Did not find input files in {input_dir}.')
 reference_struct = input_dir / 'ref.pdb'
@@ -190,12 +216,13 @@ def figure1b(make_top):
 
     input_list = gmx.read_tpr(tpr_input)
 
-    md = gmx.mdrun(input_list, runtime_args={'-maxh': '2'})
+    md = gmx.mdrun(input_list, runtime_args={'-maxh': str(maxh)})
     md.run()
 
     return {
         'input_list': input_list,
-        'trajectory': md.output.trajectory.result()}
+        'trajectory': md.output.trajectory.result()
+    }
 
 
 def figure1c(input_list):
@@ -210,8 +237,9 @@ def figure1c(input_list):
             input_list,
             runtime_args={
                 '-cpi': subgraph.checkpoint,
-                '-maxh': '2',
-                '-noappend': None
+                '-maxh': str(maxh),
+                '-noappend': None,
+                '-nt': str(threads_per_rank)
             })
 
         subgraph.checkpoint = md.output.checkpoint
@@ -229,7 +257,9 @@ def figure1c(input_list):
 
     folding_loop = gmx.while_loop(
         operation=subgraph,
-        condition=gmx.logical_not(subgraph.found_native))()
+        condition=gmx.logical_not(subgraph.found_native),
+        # max_iteration=10
+    )()
     logging.info('Beginning folding_loop.')
     folding_loop.run()
     logging.info(f'Finished folding_loop. min_rms: {folding_loop.output.min_rms.result()}')
@@ -241,13 +271,8 @@ if __name__ == '__main__':
     logging.info('Created a handle to a commandline operation.')
 
     input_list, trajectory = figure1b(make_top).values()
-    if isinstance(trajectory, list):
-        logging.info(
-            'Generated trajectories: '
-            ', '.join(filename for filename in trajectory)
-        )
-    else:
-        logging.info(f'Generated trajectory {trajectory}.')
+    assert input_list.output.ensemble_width == ensemble_size
 
     folding_loop = figure1c(input_list)
-    logging.info(f'Folding loop result: {folding_loop}')
+    results = {key: getattr(folding_loop.output, key).result() for key in folding_loop.output.keys()}
+    logging.info(f'Folding loop result: {results}')
