@@ -3,9 +3,14 @@ Python examples and tutorial material for gmxapi 0.3 on GROMACS 2022.
 
 This material is under development at https://github.com/kassonlab/gmxapi-tutorials for contribution to https://tutorials.gromacs.org/
 
-Tutorial material is provided as Jupyter notebooks. (See below for instructions on installing software and accessing a Jupyter notebook server.) [Tutorial.ipynb](gmxapi-introduction/Tutorial.ipynb) provides an introduction to gmxapi concepts and syntax, and works up to an example of a parallel simulation and analysis loop. The accompanying [fs-peptide.py](examples/fs-peptide.py) file captures all of the tutorial material in a script that can be executed with `mpiexec` (such as through a HPC job).
+Clone this repository or pull a Docker image for an interactive walk-through of gmxapi 0.3.
+Tutorial material is provided as Jupyter notebooks. (See below for instructions on installing software and accessing a Jupyter notebook server.)
 
-Some additional preliminary information and checks are available in the [overview.ipynb](gmxapi-introduction/overview.ipynb) notebook to help set up and verify the Python environment.
+## Repository Contents
+
+* [Tutorial.ipynb](gmxapi-introduction/Tutorial.ipynb) provides an introduction to gmxapi concepts and syntax, and works up to an example of a parallel simulation and analysis loop. In our loop, we simulate a funnelweb spider peptide as it folds, comparing to a reference structure, extending the trajectory with each iteration. The loop terminates when the root-mean-squared displacement of the peptide backbone is within our selected tolerance of the reference structure (or when the "while loop" has exceeded a maximum number of iterations.)
+* [fs-peptide.py](examples/fs-peptide.py) file captures all the above tutorial material in a script that can be executed with `mpiexec` (such as through a HPC job). See the script contents (or run with `--help`) for details on the run time logic and options.
+* [overview.ipynb](gmxapi-introduction/overview.ipynb) contains additional preliminary information and checks to help set up and verify the Python environment.
 
 ## Sample inputs
 
@@ -76,10 +81,6 @@ If your desktop environment does not automatically take you to the web interface
 Navigate to `gmxapi-introduction`, and open `Tutorial.ipynb`.
 
 **Warning:** The `--rm` in the command line above tells Docker to remove the container when you shut down the container. Any edits you make to the notebook will be lost. If you want to save your changes, the best choice is to use the File->Download option from within the notebook. Alternatively, you could explicitly make a snapshot of the container with [`docker commit`](https://docs.docker.com/engine/reference/commandline/commit/). You could run `docker` without the `--rm` option, but you will need to clean up extra containers manually to keep from filling up your hard disk.
-
-## See Also: Example scripts
-
-[examples/fs-peptide.py](examples/fs-peptide.py)
 
 ## Caveats (TODOs)
 
