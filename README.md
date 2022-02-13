@@ -10,13 +10,13 @@ Tutorial material is provided as Jupyter notebooks. (See below for instructions 
 
 ### Tutorials and Examples
 
-* [Tutorial.ipynb](gmxapi-introduction/Tutorial.ipynb) provides an introduction to gmxapi concepts and syntax, and works up to an example of a parallel simulation and analysis loop. In our loop, we simulate a funnelweb spider peptide as it folds, comparing to a reference structure, extending the trajectory with each iteration. The loop terminates when the root-mean-squared displacement of the peptide backbone is within our selected tolerance of the reference structure (or when the "while loop" has exceeded a maximum number of iterations.)
+* [tutorial.ipynb](gmxapi-introduction/tutorial.ipynb) provides an introduction to gmxapi concepts and syntax, and works up to an example of a parallel simulation and analysis loop. In our loop, we simulate a funnelweb spider peptide as it folds, comparing to a reference structure, extending the trajectory with each iteration. The loop terminates when the root-mean-squared displacement of the peptide backbone is within our selected tolerance of the reference structure (or when the "while loop" has exceeded a maximum number of iterations.)
 * [fs-peptide.py](examples/fs-peptide.py) file captures all the above tutorial material in a script that can be executed with `mpiexec` (such as through a HPC job). See the script contents (or run with `--help`) for details on the run time logic and options.
 * [overview.ipynb](gmxapi-introduction/overview.ipynb) contains additional preliminary information and checks to help set up and verify the Python environment.
 
 ### Additional material
 
-* *[restrained-ensemble.py](examples/restrainted-ensemble.py) (under revision)* illustrates the pluggable MD extension code demonstrated in [DOI 10.1093/bioinformatics/bty484](https://doi.org/10.1093/bioinformatics/bty484)
+* *[restrained-ensemble.py](examples/restrained-ensemble.py) (under revision)* illustrates the pluggable MD extension code demonstrated in [DOI 10.1093/bioinformatics/bty484](https://doi.org/10.1093/bioinformatics/bty484)
 
 ## Sample inputs
 
