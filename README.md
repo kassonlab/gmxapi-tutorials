@@ -48,7 +48,7 @@ Download archives from the following URLs.
 ### Install the software
 
 Refer to installation instructions at the respective project websites.
-* [gmxapi on GROMACS](https://manual.gromacs.org/2022-rc1/gmxapi/userguide/install.html), 
+* [gmxapi on GROMACS](https://manual.gromacs.org/current/gmxapi/userguide/install.html), 
 * *run-brer TBD*, 
 * *brer-plugin TBD*.
 
