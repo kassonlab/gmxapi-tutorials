@@ -14,6 +14,9 @@ Tutorial material is provided as Jupyter notebooks. (See below for instructions 
 * [fs-peptide.py](examples/fs-peptide.py) file captures all the above tutorial material in a script that can be executed with `mpiexec` (such as through a HPC job). See the script contents (or run with `--help`) for details on the run time logic and options.
 * [overview.ipynb](gmxapi-introduction/overview.ipynb) contains additional preliminary information and checks to help set up and verify the Python environment.
 
+Tutorial material is derived from the example in Figure 1 of [*PLOS Comput Biol* 2022.
+    DOI: [10.1371/journal.pcbi.1009835](https://dx.plos.org/10.1371/journal.pcbi.1009835)]
+
 ### Additional material
 
 * *[restrained-ensemble.py](examples/restrained-ensemble.py) (under revision)* illustrates the pluggable MD extension code demonstrated in [DOI 10.1093/bioinformatics/bty484](https://doi.org/10.1093/bioinformatics/bty484)
