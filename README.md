@@ -3,6 +3,8 @@ Python examples and tutorial material for gmxapi 0.3 on GROMACS 2022.
 
 This material is under development at https://github.com/kassonlab/gmxapi-tutorials for contribution to https://tutorials.gromacs.org/
 
+Gmxapi 0.3 is described in Irrgang et al., *PLOS Comput Biol* 2022. DOI: [10.1371/journal.pcbi.1009835](https://dx.plos.org/10.1371/journal.pcbi.1009835)
+
 Clone this repository or pull a Docker image for an interactive walk-through of gmxapi 0.3.
 Tutorial material is provided as Jupyter notebooks. (See below for instructions on installing software and accessing a Jupyter notebook server.)
 
@@ -14,8 +16,7 @@ Tutorial material is provided as Jupyter notebooks. (See below for instructions 
 * [fs-peptide.py](examples/fs-peptide.py) file captures all the above tutorial material in a script that can be executed with `mpiexec` (such as through a HPC job). See the script contents (or run with `--help`) for details on the run time logic and options.
 * [overview.ipynb](gmxapi-introduction/overview.ipynb) contains additional preliminary information and checks to help set up and verify the Python environment.
 
-Tutorial material is derived from the example in Figure 1 of [*PLOS Comput Biol* 2022.
-    DOI: [10.1371/journal.pcbi.1009835](https://dx.plos.org/10.1371/journal.pcbi.1009835)]
+Tutorial material is derived from the example in Figure 1 of [10.1371/journal.pcbi.1009835](https://dx.plos.org/10.1371/journal.pcbi.1009835)
 
 ### Additional material
 
