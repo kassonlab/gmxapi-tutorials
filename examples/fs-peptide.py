@@ -10,7 +10,7 @@ After installing GROMACS and gmxapi, execute this script with a Python 3.7+ inte
 For a trajectory ensemble, use `mpiexec` and `mpi4py`. For example, for an ensemble of
 size 50, activate your gmxapi Python virtual environment and run
 
-    mpiexec -n 50 `which python` -m mpi4py fs-peptide.py
+    mpiexec -n 50 `which python` -m mpi4py fs-peptide.py --cores 50
 
 """
 import argparse
